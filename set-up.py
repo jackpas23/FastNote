@@ -69,7 +69,9 @@ commando(fnclear)
 commando(fndisplay)
 commando(fastnote)
 
-print("done")
+print("Ctrl+Shift+s to display your FNs")
+print("Ctrl+Shift+c to forward your clipboard to your FN")
+print("Super+n to clear your FNs")
 
 
         
