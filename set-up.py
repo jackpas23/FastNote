@@ -14,7 +14,7 @@ def prep():
     print("\nPlease enter the path now (or press ENTER for easy installation):", end=' ')
     flavor=input("You Kali(1) or Ubuntu(2) bruh?:").strip()
     print(flavor)
-    if flavor != "1" or flavor != "2":
+    while flavor not in ["1", "2"]:
         flavor=input("You Kali(1) or Ubuntu(2) dumbass:").strip()
 
     try:
