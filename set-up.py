@@ -27,7 +27,7 @@ def prep():
 # Writing a string to file
 
 
-def commando(name):
+def ubuntu(name):
     paff=pathlib.Path().resolve()
     path=str(paff)
     # defining keys & strings to be used
@@ -60,20 +60,26 @@ def commando(name):
     for cmd in [cmd0, cmd1, cmd2, cmd3]:
         subprocess.call(["/bin/bash", "-c", cmd])
 #commands = ['fnclear','fndisplay','fndash']
+def linux(name):
+    paff = pathlib.Path().resolve()
+    path = str(paff)
+    cmd1 = f"xfconf-query -c xfce4-keyboard-shortcuts -p '/commands/custom/{name[2]}' -n -t string -s 'python3 {path}/{name[1]}'"
+    subprocess.call(["/bin/bash", "-c", cmd1])
+
 fnclear=['fnclear','fastnoteclear.py','<Super>n']
 fndisplay=['fndisplay','fastDisplay.py','<Ctrl><Shift>s']
 fastnote=['fastnote','fastnote.py','<Ctrl><Shift>c']
 install_dependencies()
 prep()
-commando(fnclear)
-commando(fndisplay)
-commando(fastnote)
+ubuntu(fnclear)
+ubuntu(fndisplay)
+ubuntu(fastnote)
 
 print("Ctrl+Shift+s to display your FNs")
 print("Ctrl+Shift+c to forward your clipboard to your FN")
 print("Super+n to clear your FNs")
 print("SPACE or ESC to exit FN display")
 
-
+def
 
         
