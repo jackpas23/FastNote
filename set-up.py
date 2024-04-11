@@ -13,6 +13,7 @@ def prep():
     print("Example of a full path: /home/username/Documents/notes.txt")
     print("\nPlease enter the path now (or press ENTER for easy installation):", end=' ')
     flavor=input("You Kali(a) or Ubuntu(b) bruh?:").strip()
+    print(flavor)
     if flavor != 'a' or 'b':
         flavor=input("You Kali(1) or Ubuntu(2) dumbass:").strip()
 
