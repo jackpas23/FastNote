@@ -18,6 +18,9 @@ def prep():
         flavor=input("You Kali(1) or Ubuntu(2) dumbass:").strip()
 
     try:
+        print("----------------------------")
+        print("\nIf you prefer an easy installation, simply press ENTER, and a default path will be used.")
+        print("----------------------------")
         txt_location = input("full PATH: ").strip()
         if txt_location == "":
             txt_location = str(pathlib.Path().resolve())+'/fast.txt'
