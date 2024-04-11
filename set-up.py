@@ -52,18 +52,13 @@ def commando(name):
             break
     # add the new keybinding to the list
     current.append(new)
-    linux=input("\nIs this installation on Kali(1) or Ubuntu(2) Linux? ").strip()
-    if linux == '1':
-        cmd1 = f"xfconf-query -c xfce4-keyboard-shortcuts -p '/commands/custom/{name[2]}' -n -t string -s 'python3 {path}/{name[1]}'"
-        subprocess.call(["/bin/bash", "-c", cmd1])    
-    elif linux == '2':
-        # create the shortcut, set the name, command and shortcut key
-        cmd0 = 'gsettings set '+key+' "'+str(current)+'"'
-        cmd1 = 'gsettings set '+subkey1+new+" name '"+name[0]+"'"
-        cmd2 = 'gsettings set '+subkey1+new+" command '"+'python3'+' '+path+'/'+name[1]+"'"
-        cmd3 = 'gsettings set '+subkey1+new+" binding '"+name[2]+"'"
-        for cmd in [cmd0, cmd1, cmd2, cmd3]:
-            subprocess.call(["/bin/bash", "-c", cmd])
+    # create the shortcut, set the name, command and shortcut key
+    cmd0 = 'gsettings set '+key+' "'+str(current)+'"'
+    cmd1 = 'gsettings set '+subkey1+new+" name '"+name[0]+"'"
+    cmd2 = 'gsettings set '+subkey1+new+" command '"+'python3'+' '+path+'/'+name[1]+"'"
+    cmd3 = 'gsettings set '+subkey1+new+" binding '"+name[2]+"'"
+    for cmd in [cmd0, cmd1, cmd2, cmd3]:
+        subprocess.call(["/bin/bash", "-c", cmd])
 #commands = ['fnclear','fndisplay','fndash']
 fnclear=['fnclear','fastnoteclear.py','<Super>n']
 fndisplay=['fndisplay','fastDisplay.py','<Ctrl><Shift>s']
