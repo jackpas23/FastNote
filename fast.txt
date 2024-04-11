@@ -1,5 +1,0 @@
-i
-ted, please provide the full path to the text file for FastNote.")
-    print("If you prefer an easy installation, simply press ENTER, and a d
-ted, please provide the full path to the text file for FastNote.")
-    print("If you prefer an easy installation, simply press ENTER, and a d
