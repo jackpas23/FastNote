@@ -12,6 +12,9 @@ def prep():
     print("If you prefer an easy installation, simply press ENTER, and a default path will be used.")
     print("Example of a full path: /home/username/Documents/notes.txt")
     print("\nPlease enter the path now (or press ENTER for easy installation):", end=' ')
+    flavor=input("You Kali(1) or Ubuntu(2) bruh?:").strip()
+    if flavor != '1' or '2':
+        flavor=input("You Kali(1) or Ubuntu(2) dumbass:").strip()
 
     try:
         txt_location = input("full PATH: ").strip()
@@ -21,8 +24,11 @@ def prep():
         file1 = open('config.py', 'w')
         file1.write('text_path='+"'"+txt_location+"'")
         file1.close()
+        return flavor
+
     except Exception as e:
         print(e)
+        return flavor
  
 # Writing a string to file
 
@@ -65,21 +71,32 @@ def linux(name):
     path = str(paff)
     cmd1 = f"xfconf-query -c xfce4-keyboard-shortcuts -p '/commands/custom/{name[2]}' -n -t string -s 'python3 {path}/{name[1]}'"
     subprocess.call(["/bin/bash", "-c", cmd1])
+def main():
+    install_dependencies()
+    distro=prep()
+    if distro =='1':
+        ubuntu(fnclear)
+        ubuntu(fndisplay)
+        ubuntu(fastnote)
+    if distro == '2':
+        linux(fnclear)
+        linux(fndisplay)
+        linux(fastnote)
 
 fnclear=['fnclear','fastnoteclear.py','<Super>n']
 fndisplay=['fndisplay','fastDisplay.py','<Ctrl><Shift>s']
 fastnote=['fastnote','fastnote.py','<Ctrl><Shift>c']
 install_dependencies()
 prep()
-ubuntu(fnclear)
-ubuntu(fndisplay)
-ubuntu(fastnote)
+
 
 print("Ctrl+Shift+s to display your FNs")
 print("Ctrl+Shift+c to forward your clipboard to your FN")
 print("Super+n to clear your FNs")
 print("SPACE or ESC to exit FN display")
 
-def
+if __name__ == '__main__':
+    main()
+
 
         
