@@ -2,6 +2,9 @@
 import subprocess
 import sys
 import pathlib
+def install_dependencies():
+    print("\nInstalling required Python packages...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
 def prep():
     print("\nWelcome to FastNote Setup!")
     print("----------------------------")
@@ -60,6 +63,7 @@ def commando(name):
 fnclear=['fnclear','fastnoteclear.py','<Super>n']
 fndisplay=['fndisplay','fastDisplay.py','<Ctrl><Shift>s']
 fastnote=['fastnote','fastnote.py','<Ctrl><Shift>c']
+install_dependencies()
 prep()
 commando(fnclear)
 commando(fndisplay)
