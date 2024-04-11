@@ -75,11 +75,11 @@ def linux(name):
 def main():
     install_dependencies()
     distro=str(prep())
-    if distro =="1":
+    if distro =="2":
         ubuntu(fnclear)
         ubuntu(fndisplay)
         ubuntu(fastnote)
-    if distro == "2":
+    if distro == "1":
         linux(fnclear)
         linux(fndisplay)
         linux(fastnote)
