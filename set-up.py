@@ -86,10 +86,6 @@ def main():
 fnclear=['fnclear','fastnoteclear.py','<Super>n']
 fndisplay=['fndisplay','fastDisplay.py','<Ctrl><Shift>s']
 fastnote=['fastnote','fastnote.py','<Ctrl><Shift>c']
-install_dependencies()
-prep()
-
-
 print("Ctrl+Shift+s to display your FNs")
 print("Ctrl+Shift+c to forward your clipboard to your FN")
 print("Super+n to clear your FNs")
@@ -97,6 +93,7 @@ print("SPACE or ESC to exit FN display")
 
 if __name__ == '__main__':
     main()
+
 
 
         
