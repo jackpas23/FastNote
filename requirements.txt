@@ -1,0 +1,2 @@
+easygui==0.98.3
+pyperclip==1.8.2
