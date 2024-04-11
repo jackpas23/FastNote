@@ -1,0 +1,1 @@
+text_path='/home/flaxo/Documents/fastnote/fast.txt'
