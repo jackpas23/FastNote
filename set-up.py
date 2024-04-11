@@ -6,6 +6,9 @@ def prep():
     print("Include the full path to the text file for fastnote")
     try:
         txt_location = input("full PATH: ").strip()
+        if txt_location == "":
+            txt_location = str(pathlib.Path().resolve())+'/fast.txt'
+    
         file1 = open('config.py', 'w')
         file1.write('text_path='+"'"+txt_location+"'")
         file1.close()
