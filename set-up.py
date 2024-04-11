@@ -3,7 +3,13 @@ import subprocess
 import sys
 import pathlib
 def prep():
-    print("Include the full path to the text file for fastnote")
+    print("\nWelcome to FastNote Setup!")
+    print("----------------------------")
+    print("To get started, please provide the full path to the text file for FastNote.")
+    print("If you prefer an easy installation, simply press ENTER, and a default path will be used.")
+    print("Example of a full path: /home/username/Documents/notes.txt")
+    print("\nPlease enter the path now (or press ENTER for easy installation):", end=' ')
+
     try:
         txt_location = input("full PATH: ").strip()
         if txt_location == "":
