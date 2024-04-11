@@ -74,7 +74,7 @@ def linux(name):
     subprocess.call(["/bin/bash", "-c", cmd1])
 def main():
     install_dependencies()
-    distro=prep()
+    distro=str(prep())
     if distro =="1":
         ubuntu(fnclear)
         ubuntu(fndisplay)
