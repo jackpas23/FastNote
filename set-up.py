@@ -26,43 +26,32 @@ def prep():
 
     return flavor
 
-def check_schema_exists(schema):
-    try:
-        subprocess.check_output(["/bin/bash", "-c", f"gsettings list-schemas | grep {schema}"])
-        return True
-    except subprocess.CalledProcessError:
-        return False
-
 def ubuntu(name):
-    schema = "org.gnome.desktop.wm.keybindings"
-    if not check_schema_exists(schema):
-        print(f"Error: GNOME schema {schema} does not exist. Exiting.")
-        return
+    schema = "org.gnome.settings-daemon.plugins.media-keys.custom-keybindings"
+    key = "org.gnome.settings-daemon.plugins.media-keys custom-keybindings"
 
     try:
+        # Get current custom keybindings
         get = lambda cmd: subprocess.check_output(["/bin/bash", "-c", cmd]).decode("utf-8")
-        current = eval(get(f"gsettings get {schema}.custom-keybindings").lstrip("@as"))
+        current = eval(get(f"gsettings get {key}").lstrip("@as"))
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
         current = []
 
-    n = 0
-    while True:
-        new = f"/{schema.replace('.', '/')}/custom{n}/"
-        if new in current:
-            n += 1
-        else:
-            break
+    # Define new keybinding path
+    new_binding_path = f"/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom{len(current)}/"
     
-    current.append(new)
-    commands = [
-        f'gsettings set {schema}.custom-keybindings "{str(current)}"',
-        f"gsettings set {schema}.custom{n} name '{name[0]}'",
-        f"gsettings set {schema}.custom{n} command 'python3 {pathlib.Path().resolve()}/{name[1]}'",
-        f"gsettings set {schema}.custom{n} binding '{name[2]}'"
-    ]
-    for cmd in commands:
-        subprocess.call(["/bin/bash", "-c", cmd])
+    # Append the new keybinding path
+    current.append(new_binding_path)
+
+    # Set new custom keybinding
+    try:
+        subprocess.check_call(["gsettings", "set", key, str(current)])
+        subprocess.check_call(["gsettings", "set", f"{schema}:{new_binding_path}name", name[0]])
+        subprocess.check_call(["gsettings", "set", f"{schema}:{new_binding_path}command", f"python3 {pathlib.Path().resolve()}/{name[1]}"])
+        subprocess.check_call(["gsettings", "set", f"{schema}:{new_binding_path}binding", name[2]])
+    except subprocess.CalledProcessError as e:
+        print(f"Error setting keybindings: {e}")
 
 def linux(name):
     path = str(pathlib.Path().resolve())
