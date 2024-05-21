@@ -34,32 +34,21 @@ def check_schema_exists(schema):
         return False
 
 def ubuntu(name):
-    schemas = [
-        "org.gnome.settings-daemon.plugins.media-keys.custom-keybindings",
-        "org.gnome.desktop.wm.keybindings"
-    ]
-    key = None
-    for schema in schemas:
-        if check_schema_exists(schema):
-            key = schema
-            break
-    
-    if key is None:
-        print("Error: No suitable GNOME schema found. Exiting.")
+    schema = "org.gnome.desktop.wm.keybindings"
+    if not check_schema_exists(schema):
+        print(f"Error: GNOME schema {schema} does not exist. Exiting.")
         return
 
-    item_s = f"/{key.replace('.', '/')}/"
-    
     try:
         get = lambda cmd: subprocess.check_output(["/bin/bash", "-c", cmd]).decode("utf-8")
-        current = eval(get(f"gsettings get {key}").lstrip("@as"))
+        current = eval(get(f"gsettings get {schema}.custom-keybindings").lstrip("@as"))
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
         current = []
 
     n = 0
     while True:
-        new = f"{item_s}custom{n}/"
+        new = f"/{schema.replace('.', '/')}/custom{n}/"
         if new in current:
             n += 1
         else:
@@ -67,10 +56,10 @@ def ubuntu(name):
     
     current.append(new)
     commands = [
-        f'gsettings set {key} "{str(current)}"',
-        f"gsettings set {key}:{new} name '{name[0]}'",
-        f"gsettings set {key}:{new} command 'python3 {pathlib.Path().resolve()}/{name[1]}'",
-        f"gsettings set {key}:{new} binding '{name[2]}'"
+        f'gsettings set {schema}.custom-keybindings "{str(current)}"',
+        f"gsettings set {schema}.custom{n} name '{name[0]}'",
+        f"gsettings set {schema}.custom{n} command 'python3 {pathlib.Path().resolve()}/{name[1]}'",
+        f"gsettings set {schema}.custom{n} binding '{name[2]}'"
     ]
     for cmd in commands:
         subprocess.call(["/bin/bash", "-c", cmd])
