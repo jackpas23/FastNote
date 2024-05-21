@@ -1,103 +1,79 @@
-#!/usr/bin/env python3
 import subprocess
 import sys
 import pathlib
+
 def install_dependencies():
     print("\nInstalling required Python packages...")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+
 def prep():
     print("\nWelcome to FastNote Setup!")
     print("----------------------------")
-    print("To get started, please provide the full path to the text file for FastNote.")
-    print("If you prefer an easy installation, simply press ENTER, and a default path will be used.")
+    print("To get started, provide the full path to the text file for FastNote.")
+    print("Press ENTER for easy installation with a default path.")
     print("Example of a full path: /home/username/Documents/notes.txt")
-    print("\nPlease enter the path now (or press ENTER for easy installation):", end=' ')
-    flavor=input("You Kali(1) or Ubuntu(2) bruh?:").strip()
-    print(flavor)
-    while flavor not in ["1", "2"]:
-        flavor=input("You Kali(1) or Ubuntu(2) dumbass:").strip()
-
-    try:
-        print("----------------------------")
-        print("\nIf you prefer an easy installation, simply press ENTER, and a default path will be used.")
-        print("----------------------------")
-        txt_location = input("full PATH: ").strip()
-        if txt_location == "":
-            txt_location = str(pathlib.Path().resolve())+'/fast.txt'
     
-        file1 = open('config.py', 'w')
-        file1.write('text_path='+"'"+txt_location+"'")
-        file1.close()
-        return flavor
+    flavor = input("Are you using Kali(1) or Ubuntu(2)?: ").strip()
+    while flavor not in ["1", "2"]:
+        flavor = input("Please enter 1 for Kali or 2 for Ubuntu: ").strip()
 
-    except Exception as e:
-        print(e)
-        return flavor
- 
-# Writing a string to file
+    txt_location = input("Enter full path (or press ENTER for default): ").strip()
+    if not txt_location:
+        txt_location = str(pathlib.Path().resolve() / 'fast.txt')
 
+    with open('config.py', 'w') as file:
+        file.write(f'text_path="{txt_location}"')
+
+    return flavor
 
 def ubuntu(name):
-    paff=pathlib.Path().resolve()
-    path=str(paff)
-    # defining keys & strings to be used
-    key = "org.gnome.settings-daemon.plugins.media-keys custom-keybindings"
-    subkey1 = key.replace(" ", ".")[:-1]+":"
-    item_s = "/"+key.replace(" ", "/").replace(".", "/")+"/"
-    firstname = "custom"
-    # get the current list of custom shortcuts
+    key = "org.gnome.settings-daemon.plugins.media-keys.custom-keybindings"
+    subkey = "org.gnome.settings-daemon.plugins.media-keys.custom-keybindings"
+    item_s = "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/"
+    
     get = lambda cmd: subprocess.check_output(["/bin/bash", "-c", cmd]).decode("utf-8")
-    array_str = get("gsettings get "+key)
-    # in case the array was empty, remove the annotation hints
-    command_result = array_str.lstrip("@as")
-    current = eval(command_result)
-    # make sure the additional keybinding mention is no duplicate
+    current = eval(get(f"gsettings get {key}").lstrip("@as"))
+
     n = 0
     while True:
-        new = item_s+firstname+str(n)+"/"
+        new = f"{item_s}custom{n}/"
         if new in current:
-            n = n+1
+            n += 1
         else:
-            
             break
-    # add the new keybinding to the list
+    
     current.append(new)
-    # create the shortcut, set the name, command and shortcut key
-    cmd0 = 'gsettings set '+key+' "'+str(current)+'"'
-    cmd1 = 'gsettings set '+subkey1+new+" name '"+name[0]+"'"
-    cmd2 = 'gsettings set '+subkey1+new+" command '"+'python3'+' '+path+'/'+name[1]+"'"
-    cmd3 = 'gsettings set '+subkey1+new+" binding '"+name[2]+"'"
-    for cmd in [cmd0, cmd1, cmd2, cmd3]:
+    commands = [
+        f'gsettings set {key} "{str(current)}"',
+        f"gsettings set {subkey}:{new} name '{name[0]}'",
+        f"gsettings set {subkey}:{new} command 'python3 {pathlib.Path().resolve()}/{name[1]}'",
+        f"gsettings set {subkey}:{new} binding '{name[2]}'"
+    ]
+    for cmd in commands:
         subprocess.call(["/bin/bash", "-c", cmd])
-#commands = ['fnclear','fndisplay','fndash']
+
 def linux(name):
-    paff = pathlib.Path().resolve()
-    path = str(paff)
-    cmd1 = f"xfconf-query -c xfce4-keyboard-shortcuts -p '/commands/custom/{name[2]}' -n -t string -s 'python3 {path}/{name[1]}'"
-    subprocess.call(["/bin/bash", "-c", cmd1])
+    path = str(pathlib.Path().resolve())
+    cmd = f"xfconf-query -c xfce4-keyboard-shortcuts -p '/commands/custom/{name[2]}' -n -t string -s 'python3 {path}/{name[1]}'"
+    subprocess.call(["/bin/bash", "-c", cmd])
+
 def main():
     install_dependencies()
-    distro=str(prep())
-    if distro =="2":
-        ubuntu(fnclear)
-        ubuntu(fndisplay)
-        ubuntu(fastnote)
-    if distro == "1":
-        linux(fnclear)
-        linux(fndisplay)
-        linux(fastnote)
+    distro = prep()
+    if distro == "2":
+        for name in [fnclear, fndisplay, fastnote]:
+            ubuntu(name)
+    elif distro == "1":
+        for name in [fnclear, fndisplay, fastnote]:
+            linux(name)
 
-fnclear=['fnclear','fastnoteclear.py','<Super>n']
-fndisplay=['fndisplay','fastDisplay.py','<Ctrl><Shift>s']
-fastnote=['fastnote','fastnote.py','<Ctrl><Shift>c']
-print("Ctrl+Shift+s to display your FNs")
-print("Ctrl+Shift+c to forward your clipboard to your FN")
-print("Super+n to clear your FNs")
-print("SPACE or ESC to exit FN display")
+fnclear = ['fnclear', 'fastnoteclear.py', '<Super>n']
+fndisplay = ['fndisplay', 'fastDisplay.py', '<Ctrl><Shift>s']
+fastnote = ['fastnote', 'fastnote.py', '<Ctrl><Shift>c']
 
 if __name__ == '__main__':
     main()
-
-
-
-        
+    print("Ctrl+Shift+s to display your FNs")
+    print("Ctrl+Shift+c to forward your clipboard to your FN")
+    print("Super+n to clear your FNs")
+    print("SPACE or ESC to exit FN display")
