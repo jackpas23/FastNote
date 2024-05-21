@@ -28,7 +28,6 @@ def prep():
 
 def ubuntu(name):
     key = "org.gnome.settings-daemon.plugins.media-keys.custom-keybindings"
-    subkey = "org.gnome.settings-daemon.plugins.media-keys.custom-keybindings"
     item_s = "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/"
     
     get = lambda cmd: subprocess.check_output(["/bin/bash", "-c", cmd]).decode("utf-8")
@@ -45,9 +44,9 @@ def ubuntu(name):
     current.append(new)
     commands = [
         f'gsettings set {key} "{str(current)}"',
-        f"gsettings set {subkey}:{new} name '{name[0]}'",
-        f"gsettings set {subkey}:{new} command 'python3 {pathlib.Path().resolve()}/{name[1]}'",
-        f"gsettings set {subkey}:{new} binding '{name[2]}'"
+        f"gsettings set {key}:{new} name '{name[0]}'",
+        f"gsettings set {key}:{new} command 'python3 {pathlib.Path().resolve()}/{name[1]}'",
+        f"gsettings set {key}:{new} binding '{name[2]}'"
     ]
     for cmd in commands:
         subprocess.call(["/bin/bash", "-c", cmd])
