@@ -26,10 +26,29 @@ def prep():
 
     return flavor
 
+def check_schema_exists(schema):
+    try:
+        subprocess.check_output(["/bin/bash", "-c", f"gsettings list-schemas | grep {schema}"])
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
 def ubuntu(name):
-    key = "org.gnome.settings-daemon.plugins.media-keys.custom-keybindings"
-    subkey = "org.gnome.settings-daemon.plugins.media-keys.custom-keybindings"
-    item_s = "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/"
+    schemas = [
+        "org.gnome.settings-daemon.plugins.media-keys.custom-keybindings",
+        "org.gnome.desktop.wm.keybindings"
+    ]
+    key = None
+    for schema in schemas:
+        if check_schema_exists(schema):
+            key = schema
+            break
+    
+    if key is None:
+        print("Error: No suitable GNOME schema found. Exiting.")
+        return
+
+    item_s = f"/{key.replace('.', '/')}/"
     
     try:
         get = lambda cmd: subprocess.check_output(["/bin/bash", "-c", cmd]).decode("utf-8")
@@ -49,9 +68,9 @@ def ubuntu(name):
     current.append(new)
     commands = [
         f'gsettings set {key} "{str(current)}"',
-        f"gsettings set {subkey}:{new} name '{name[0]}'",
-        f"gsettings set {subkey}:{new} command 'python3 {pathlib.Path().resolve()}/{name[1]}'",
-        f"gsettings set {subkey}:{new} binding '{name[2]}'"
+        f"gsettings set {key}:{new} name '{name[0]}'",
+        f"gsettings set {key}:{new} command 'python3 {pathlib.Path().resolve()}/{name[1]}'",
+        f"gsettings set {key}:{new} binding '{name[2]}'"
     ]
     for cmd in commands:
         subprocess.call(["/bin/bash", "-c", cmd])
